@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User Profile</h1>
+    {% if user %}
+        <p><strong>Name:</strong> {{ user['name'] }}</p>
+        <p><strong>Email:</strong> {{ user['email'] }}</p>
+        <p><strong>College Roll Number:</strong> {{ user['college_roll_no'] }}</p>
+        <p><strong>Year:</strong> {{ user['year'] }}</p>
+    {% else %}
+        <p>User data is not available.</p>
+    {% endif %}
+
+    <a href="{{ url_for('reservations') }}">Back to Reservations</a>
+</body>
+</html>

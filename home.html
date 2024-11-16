@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h2>Welcome to the Library Management System</h2>
+    <p>Use the navigation links to access different features.</p>
+    <p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
+        <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+        <a href="{{ url_for('admin_login') }}" class="btn btn-secondary">Admin Login</a>
+    </p>
+</div>
+{% endblock %}

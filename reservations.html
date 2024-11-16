@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Reservations</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            background-color: #ffffff;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .table thead th {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+
+        .table td, .table th {
+            padding: 12px 15px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            display: block;
+            margin: 20px auto 0;
+            width: 200px;
+            text-align: center;
+        }
+
+        /* Adjust link color and remove underline */
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Search bar styling */
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Reservations</h1>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by user name or book title..." onkeyup="searchReservations()">
+        </div>
+
+        <table class="table table-striped" id="reservationsTable">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Book Title</th>
+                    <th>Reservation Time</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td><a href="{{ url_for('user_profile', user_id=reservation.user_id) }}">{{ reservation.user_name }}</a></td>    
+                    <td>{{ reservation.book_title }}</td>
+                    <td>{{ reservation.reserved_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>{{ reservation.due_date.strftime('%Y-%m-%d') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">No reservations found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('librarian_dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        function searchReservations() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('reservationsTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) { // Start at 1 to skip header
+                const cells = rows[i].getElementsByTagName('td');
+                const userName = cells[0].textContent.toLowerCase();
+                const bookTitle = cells[1].textContent.toLowerCase();
+                if (userName.includes(filter) || bookTitle.includes(filter)) {
+                    rows[i].style.display = ''; // Show the row
+                } else {
+                    rows[i].style.display = 'none'; // Hide the row
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Container styling */
+    .container {
+        max-width: 900px;
+        background-color: #ffffff;
+        padding: 30px;
+        margin: 50px auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading styling */
+    h1 {
+        font-size: 2.5rem;
+        color: #333;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Search bar styling */
+    .search-bar {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+    }
+
+    /* Table styling */
+    .table {
+        margin-top: 20px;
+    }
+
+    .table thead th {
+        background-color: #007bff;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f8ff;
+    }
+
+    .table td, .table th {
+        padding: 15px;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    /* Reserve button styling */
+    .btn-primary {
+        font-size: 0.9rem;
+        padding: 5px 15px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        color: #ffffff;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-primary:disabled {
+        background-color: #d6d6d6;
+        color: #ffffff;
+        cursor: not-allowed;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 576px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .search-input {
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        .table td, .table th {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+    }
+
+    /* Stack buttons on small screens */
+    .reserve-button {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="container mt-5">
+    <h1>User Dashboard</h1>
+    <h3>Welcome, {{ user.name }}</h3>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search for books or authors..." onkeyup="searchBooks()">
+    </div>
+
+    <table class="table table-striped" id="booksTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Available Copies</th>
+                <th>Action</th> <!-- Action column styling -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.genre }}</td>
+                <td>{{ book.available_copies }}</td>
+                <td class="reserve-button">
+                    <form action="{{ url_for('reserve_book', book_id=book.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-primary" {% if book.available_copies == 0 %}disabled{% endif %}>
+                            Reserve
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function searchBooks() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('booksTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) { // Start at 1 to skip header
+            const cells = rows[i].getElementsByTagName('td');
+            const title = cells[0].textContent.toLowerCase();
+            const author = cells[1].textContent.toLowerCase();
+            if (title.includes(filter) || author.includes(filter)) {
+                rows[i].style.display = ''; // Show the row
+            } else {
+                rows[i].style.display = 'none'; // Hide the row
+            }
+        }
+    }
+</script>
+
+{% endblock %}

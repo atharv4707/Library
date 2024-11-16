@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Container styling */
+    .container {
+        max-width: 900px;
+        background-color: #ffffff;
+        padding: 30px;
+        margin: 50px auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading styling */
+    h1 {
+        font-size: 2.5rem;
+        color: #333;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        color: #007bff;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Search bar styling */
+    .search-bar {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-input {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+    }
+
+    /* Table styling */
+    .table {
+        margin-top: 20px;
+    }
+
+    .table thead th {
+        background-color: #007bff;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f8ff;
+    }
+
+    .table td, .table th {
+        padding: 15px;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    /* Edit button styling */
+    .btn-edit {
+        background-color: #28a745; /* Green */
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-edit:hover {
+        background-color: #218838; /* Darker green */
+    }
+
+    /* Responsive styles */
+    @media (max-width: 576px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+        }
+
+        .search-input {
+            padding: 8px;
+            font-size: 0.9rem;
+        }
+
+        .table td, .table th {
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+
+        .btn-edit {
+            font-size: 0.8rem;
+            padding: 5px 8px;
+        }
+    }
+</style>
+
+<div class="container mt-5">
+    <h1>Librarian Dashboard</h1>
+    <h3>Welcome, {{ user.name }}</h3>
+
+    <a href="{{ url_for('view_reservations') }}" class="btn btn-info">View User Reservations</a>
+
+    <!-- Search Bar -->
+   
+    <h2>Add New Book</h2>
+    <form action="{{ url_for('add_book') }}" method="POST">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="genre">Genre:</label>
+            <input type="text" id="genre" name="genre" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="copies">Available Copies:</label>
+            <input type="number" id="copies" name="copies" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Book</button>
+    </form>
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search for books or authors..." onkeyup="searchBooks()">
+    </div>
+
+    <h2>Existing Books</h2>
+    <table class="table table-striped" id="booksTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Available Copies</th>
+                <th>Action</th> <!-- Action column styling -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.genre }}</td>
+                <td>{{ book.available_copies }}</td>
+                <td>
+                    <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn-edit">Edit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function searchBooks() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('booksTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) { // Start at 1 to skip header
+            const cells = rows[i].getElementsByTagName('td');
+            const title = cells[0].textContent.toLowerCase();
+            const author = cells[1].textContent.toLowerCase();
+            if (title.includes(filter) || author.includes(filter)) {
+                rows[i].style.display = ''; // Show the row
+            } else {
+                rows[i].style.display = 'none'; // Hide the row
+            }
+        }
+    }
+</script>
+
+{% endblock %}

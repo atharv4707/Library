@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Reservations</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Book Title</th>
+                <th>Reserved At</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.user_info[0].name }}</td>
+                <td>{{ reservation.book_info[0].title }}</td>
+                <td>{{ reservation.reserved_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ reservation.due_date.strftime('%Y-%m-%d') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
